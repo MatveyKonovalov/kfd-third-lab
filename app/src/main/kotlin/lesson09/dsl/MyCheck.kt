@@ -1,0 +1,52 @@
+package lesson09.dsl
+
+import lesson09.HttpResponse
+import lesson09.result.ValidationResult
+
+fun check01(response: HttpResponse): ValidationResult = validate(response) {
+    status { equalTo(204) }
+    body { absentOrEmpty() }
+}
+
+fun check02(response: HttpResponse): ValidationResult = validate(response) {
+    status { equalTo(200) }
+    header("Content-Type") { startsWith("application/json") }
+    body { notEmpty() }
+}
+
+fun check03(response: HttpResponse): ValidationResult = validate(response) {
+    status { equalTo(200) }
+    header("Accept") { equalTo("application/json") }
+    header("Accept") { equalTo("text/html") }
+}
+
+fun check04(response: HttpResponse): ValidationResult = validate(response) {
+    status { equalTo(200) }
+    body {
+        json {
+            field("id") { present() }
+            field("active") { equalTo(true) }
+        }
+    }
+}
+
+fun check05(response: HttpResponse): ValidationResult = validate(response) {
+    status { equalTo(200) }
+    body {
+        json {
+            field("id") { equalTo(42L) }
+            field("active") { equalTo(true) }
+        }
+    }
+}
+
+fun check06(response: HttpResponse): ValidationResult = validate(response) {
+    status { equalTo(422) }
+    header("Content-Type") { startsWith("application/json") }
+    body {
+        json {
+            field("error") { equalTo("invalid") }
+            field("retry") { equalTo(false) }
+        }
+    }
+}
