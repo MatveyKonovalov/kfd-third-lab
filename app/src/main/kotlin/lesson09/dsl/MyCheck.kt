@@ -25,7 +25,7 @@ fun check04(response: HttpResponse): ValidationResult = validate(response) {
     body {
         json {
             field("id") { present() }
-            field("active") { equalTo(true) }
+            field("name") { equalTo("Ivanov") }
         }
     }
 }

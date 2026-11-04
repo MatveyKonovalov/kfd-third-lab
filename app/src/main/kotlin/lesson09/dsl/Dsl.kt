@@ -29,7 +29,7 @@ class ResponseScope(private val response: HttpResponse, private val errors: Muta
 class StatusScope(private val status: Int, private val errors: MutableList<Discrepancy>) {
     fun equalTo(expected: Int) {
         if (status != expected) {
-            errors.add(Discrepancy("status", "equal $expected", status.toString()))
+            errors.add(Discrepancy("status", "$expected", status.toString()))
         }
     }
 }
@@ -75,13 +75,13 @@ class HeaderScope(
 @HttpDsl
 class BodyScope(private val body: String?, private val errors: MutableList<Discrepancy>) {
     fun absentOrEmpty() {
-        if (!body.isNullOrBlank()) {
+        if (body != null && body != "") {
             errors.add(Discrepancy("body", "absent or empty", body))
         }
     }
 
     fun notEmpty() {
-        if (body.isNullOrBlank()) {
+        if (body == null || body == "") {
             errors.add(Discrepancy("body", "not empty", body ?: MISSING))
         }
     }
@@ -95,7 +95,7 @@ class BodyScope(private val body: String?, private val errors: MutableList<Discr
 
         when (parsed) {
             is JsonParseResult.Failure -> errors.add(
-                Discrepancy("body.json", "valid JSON object", MISSING)
+                Discrepancy("body.json", "valid JSON object", parsed.reason)
             )
 
             is JsonParseResult.Success -> JsonObjectScope(parsed.fields, errors).block()
