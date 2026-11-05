@@ -225,7 +225,8 @@ class DslValidationTest {
         val predicate: (String) -> Boolean = { calls++; true }
 
         val missing = validate(response()) { header("X") { satisfies("any", predicate) } }
-        val empty = validate(response(headers = mapOf("X" to emptyList()))) { header("X") { satisfies("any", predicate) } }
+        val empty =
+            validate(response(headers = mapOf("X" to emptyList()))) { header("X") { satisfies("any", predicate) } }
 
         assertEquals(0, calls)
         assertEquals(listOf(d("headers.X", "any", "<missing>")), missing.discrepancies)

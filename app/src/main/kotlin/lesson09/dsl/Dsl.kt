@@ -8,7 +8,7 @@ import lesson09.support.json.parseJsonObject
 @DslMarker
 annotation class HttpDsl
 
-const val MISSING = "<missing>"
+private const val MISSING = "<missing>"
 
 @HttpDsl
 class ResponseScope(private val response: HttpResponse, private val errors: MutableList<Discrepancy>) {
@@ -91,9 +91,7 @@ class BodyScope(private val body: String?, private val errors: MutableList<Discr
             errors.add(Discrepancy("body.json", "valid JSON object", MISSING))
             return
         }
-        val parsed = parseJsonObject(body)
-
-        when (parsed) {
+        when (val parsed = parseJsonObject(body)) {
             is JsonParseResult.Failure -> errors.add(
                 Discrepancy("body.json", "valid JSON object", parsed.reason)
             )
